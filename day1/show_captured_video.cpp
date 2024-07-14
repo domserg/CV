@@ -1,14 +1,16 @@
 #include <opencv2/opencv.hpp>
 using namespace cv;
 int main() {
-	VideoCapture video;
-	video.open(0, CAP_DSHOW);
+	int id = 0;
+	VideoCapture cap;
+	cap.open(id, CAP_DSHOW);
 	Mat frame;
 	namedWindow("Original Video", WINDOW_AUTOSIZE);
-	for (;;) {
-		video >> frame;
+	int key = -1;
+	while (key != 27) {
+		cap >> frame;
 		imshow("Original Video", frame);
-		waitKey(33);
+		key = waitKey(33);
 	}
 	return 0;
 }
