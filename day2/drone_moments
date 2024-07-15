@@ -1,0 +1,27 @@
+import cv2
+from djitellopy import Tello
+drone = Tello()
+drone.connect()
+#drone.set_video_resolution(Tello.RESOLUTION_480P)
+#drone.set_video_bitrate(Tello.BITRATE_5MBPS)
+#drone.set_video_direction(Tello.CAMERA_DOWNWARD)
+drone.streamon()
+
+
+drone.turn_motor_on()
+key = -1
+while key != 27:
+    frame = cv2.cvtColor(drone.get_frame_read().frame, cv2.COLOR_RGB2BGR)
+    cv2.imshow("Original video", frame)
+    #print(frame.shape)
+    #frame = frame[:478,:648]
+    bin = cv2.inRange(frame, (0,0,0), (60, 255, 255))
+    cv2.imshow("Binary video", bin)
+    m = cv2.moments(bin)
+    mc = int(m['m10'] / (m['m00'] + 1e-5)), int(m['m01'] / (m['m00'] + 1e-5))
+    cv2.circle(frame, mc, 20, (255, 0, 0), 2)
+    cv2.imshow("Video with CX", frame)
+    key = cv2.waitKey(1)
+cv2.destroyAllWindows()
+drone.turn_motor_off()
+drone.end()
