@@ -44,8 +44,8 @@ void loop() {
         char a = client.read();
         int d = int(a);
         //your code
-        }
         Serial.println(d);
+        }
       }
     }
     // close the connection:
