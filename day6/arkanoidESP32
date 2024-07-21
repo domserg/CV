@@ -1,0 +1,92 @@
+#include <ESP32Servo.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiAP.h>
+
+// create two servo objects
+Servo servoLeft;
+Servo servoRight;
+// Recommended pins include for servo 2,4,12-19,21-23,25-27,32-33
+int servoLeftPin = 26;
+int servoRightPin = 27;
+
+// Set these to your desired credentials.
+const char *ssid = "yourAP";
+const char *password = "yourPassword";
+
+WiFiServer server(80);
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+  servoLeft.attach(servoLeftPin);
+  servoRight.attach(servoRightPin);
+  servoLeft.write(90);
+  servoRight.write(90);
+
+  Serial.println();
+  Serial.println("Configuring access point...");
+  // You can remove the password parameter if you want the AP to be open.
+  // a valid password must have more than 7 characters
+  while (!WiFi.softAP(ssid, password)) {
+    Serial.println("Soft AP creation failed.");
+  }
+  IPAddress myIP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(myIP);
+  server.begin();
+  Serial.println("Server started");
+  servoLeft.write(90);
+  servoRight.write(90);
+  delay(1000);
+}
+
+void loop() {
+  WiFiClient client = server.available();   // listen for incoming clients
+  if (client) {                             // if you get a client,
+    Serial.println("New Client.");          // print a message out the serial port
+    String currentLine = "";                // make a String to hold incoming data from the client
+    bool kick = false;
+    int count = 0;
+    while (client.connected()) {            // loop while the client's connected=
+      count++;
+      if (client.available()) {
+        char a = client.read();
+        int d = int(a);
+        if ((d == 1 or d == 3 or d == 5) and count > 600) {
+          kick = true;
+          count = 0;
+          servoLeft.write(45);
+          servoRight.write(135);
+        }
+        if (kick and count > 300) {
+          kick = false;
+          servoLeft.write(90);
+          servoRight.write(90);
+        }
+        if (d == 2 or d == 3) {
+          //left
+          digitalWrite(motorPin1, HIGH);
+          digitalWrite(motorPin2, LOW);
+        }
+        if (d == 4 or d == 5) {
+          //right
+          digitalWrite(motorPin1, LOW);
+          digitalWrite(motorPin2, HIGH);
+        }
+        if (d == 0 or d == 1) {
+          //stop
+          digitalWrite(motorPin1, LOW);
+          digitalWrite(motorPin2, LOW);
+        }
+
+        Serial.println(d);//your code
+      }
+      //delay(1);
+    }
+  }
+  // close the connection:
+  client.stop();
+  Serial.println("Client Disconnected.");
+}
