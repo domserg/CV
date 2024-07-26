@@ -13,7 +13,7 @@ int servoRightPin = 27;
 int pos = 90;      // position in degrees
 //ESP32PWM pwm;
 
-int motorPin1 = 12, motorPin2 = 13;
+int motorPin1 = 13, motorPin2 = 14;
 
 void setup() {
   // Allow allocation of all timers
