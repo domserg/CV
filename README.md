@@ -1,2 +1,3 @@
 # CV
-Simple code for OpenCV course
+Simple code for OpenCV course.
+Python and C++
