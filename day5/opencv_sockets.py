@@ -14,7 +14,7 @@ cv2.createTrackbar("D","Full",0,5,nope)
 key = -1
 while key != 27:  # Esc
     ret, frame = cap.read()
-    if ret:x
+    if ret:
         cv2.imshow('frame', frame)
         # your code
         data = cv2.getTrackbarPos("D","Full")
