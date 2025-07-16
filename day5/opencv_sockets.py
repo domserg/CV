@@ -4,7 +4,7 @@ import cv2
 #____________________________________________________________________________________________________________\
 def nope(x):
     pass
-server_socket = socket.socket()
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 server_name = ('192.168.4.1', 80)
 server_socket.connect(server_name)
 id = 0
